@@ -9,11 +9,13 @@ const {
 } = require("date-fns");
 
 const { googleSheetCronEventCheck } = require("./utils/cronOperations");
-const { escapeMarkdown, getRandomGreeting, getRandomFarewell} = require("./utils/helpers");
+const { escapeMarkdown } = require("./utils/helpers");
 const {
   contactsMessageText,
   faqMessageText,
   cron1cMessageText,
+  greetings,
+  farewells,
 } = require("./constant/messages");
 
 const { bot } = require("./app");
@@ -26,17 +28,24 @@ const chatId = "-215426713";
 
 dotenv.config();
 
+function getRandomGreeting() {
+  return greetings[Math.floor(Math.random() * greetings.length)];
+}
 
+function getRandomFarewell() {
+  return farewells[Math.floor(Math.random() * farewells.length)];
+}
 
 // npm run startarmors
 // npm run stoparmors
 
 
 
-cron.schedule("0 * * * *", async () => {
+cron.schedule("* * * * *", async () => {
   try {
+    console.log(`start`);
     const tasks = await googleSheetCronEventCheck();
-    console.log(`current tasks:`, tasks);
+    console.log(`tasks`, tasks);
     if (tasks.length > 0) {
       for (const task of tasks) {
         const fullSet =
