@@ -9,7 +9,11 @@ const {
 } = require("date-fns");
 
 const { googleSheetCronEventCheck } = require("./utils/cronOperations");
-const { escapeMarkdown, getRandomGreeting, getRandomFarewell} = require("./utils/helpers");
+const {
+  escapeMarkdown,
+  getRandomGreeting,
+  getRandomFarewell,
+} = require("./utils/helpers");
 const {
   contactsMessageText,
   faqMessageText,
@@ -26,12 +30,8 @@ const chatId = "-215426713";
 
 dotenv.config();
 
-
-
 // npm run startarmors
 // npm run stoparmors
-
-
 
 cron.schedule("0 * * * *", async () => {
   try {
@@ -133,10 +133,20 @@ bot.setMyCommands([
 ]);
 
 bot.on("message", async msg => {
-  console.log(`msg`, msg.chat);
+  // console.log(`msg.chat`, msg.chat);
+  // console.log(`msg.text`, msg.text);
+  // console.log(`msg`, msg);
   // слушатель событий сообщения
   const chatId = msg.chat.id;
   const text = msg.text;
+
+  if (text == "@ArmorStandartBot show group id") {
+    return bot.sendMessage(
+      chatId,
+      `id: ${msg.chat.id}, title: ${msg.chat.title}, type: ${msg.chat.type}`,
+      { parse_mode: "Markdown" }
+    );
+  }
 
   if (text == "/contacts") {
     const stickerUrl = "./img/inline/girl_map.jpg";
