@@ -47,7 +47,6 @@ const getGoogleSheet = async (
       // range: `'${sheetname}'!${columnRange}`,
       range: "A1:Z1000",
     });
-
     return result.data;
   } catch (error) {
     throw error;

@@ -13,6 +13,7 @@ const { GOOGLE_SHEET_ID } = process.env;
 const googleSheetCronEventCheck = async () => {
   const result = [];
   try {
+    
     const data = await getGoogleSheet(GOOGLE_SHEET_ID);
 
     if (data && data.values && data.values.length > 0) {
@@ -20,6 +21,7 @@ const googleSheetCronEventCheck = async () => {
 
       const now = new Date();
       const dayOfWeek = format(now, "EEEE", { locale: ru }).toLowerCase();
+      
 
       const daysOfWeekMap = {
         понедельник: "Mon",
@@ -86,4 +88,4 @@ const googleSheetCronEventCheck = async () => {
 
 module.exports = { googleSheetCronEventCheck };
 
-// googleSheetCronEventCheck();
+googleSheetCronEventCheck();

@@ -1,3 +1,5 @@
+const fbaseUserDataServices = require("./fbase/fbaseUserDataServices");
+
 const dotenv = require("dotenv");
 const cron = require("node-cron");
 const {
@@ -104,14 +106,14 @@ cron.schedule("0 9 * * 1-5", () => {
 });
 
 // Расписание для отправки прощаний в будние дни в 18:00 вечера (понедельник-пятница)
-cron.schedule("0 18 * * 1-5", () => {
-  bot.sendMessage(
-    chatId,
-    getRandomFarewell() +
-      "\n\nНе забувайте закрити 1С наприкінці робочого дня.",
-    { parse_mode: "Markdown" }
-  );
-});
+// cron.schedule("0 18 * * 1-5", () => {
+//   bot.sendMessage(
+//     chatId,
+//     getRandomFarewell() +
+//       "\n\nНе забувайте закрити 1С наприкінці робочого дня.",
+//     { parse_mode: "Markdown" }
+//   );
+// });
 
 // bot.sendMessage(
 //   "-215426713",
@@ -174,3 +176,14 @@ bot.on("message", async msg => {
     });
   }
 });
+
+// test
+
+fbaseUserDataServices
+  .getUsersData()
+  .then(data => {
+    console.log("All User Data:", JSON.stringify(data, null, 2));
+  })
+  .catch(error => {
+    console.error("Error:", error);
+  });
