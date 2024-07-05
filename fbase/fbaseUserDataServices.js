@@ -22,7 +22,20 @@ fbaseUserDataServices.getUsersData = async () => {
       const projectsDataRef = userDoc.ref.collection("projectsData");
       const projectsDataSnapshot = await projectsDataRef.get();
       projectsDataSnapshot.forEach(projectDoc => {
-        userData.projectsData.push({ id: projectDoc.id, ...projectDoc.data() });
+        // only active google projects
+        if (
+          projectDoc.data().active &&
+          projectDoc
+            .data()
+            .integrations.find(
+              integrations =>
+                integrations.active && integrations.name === "Google Calendar"
+            )
+        )
+          userData.projectsData.push({
+            id: projectDoc.id,
+            ...projectDoc.data(),
+          });
       });
 
       // Get project-categories subcollection
@@ -35,7 +48,7 @@ fbaseUserDataServices.getUsersData = async () => {
         });
       });
 
-      allUserData.push(userData);
+      userData.projectsData.length > 0 && allUserData.push(userData);
     }
 
     return allUserData;

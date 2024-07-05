@@ -1,6 +1,11 @@
 const { parse, isWithinInterval, addMinutes, format } = require("date-fns");
 const { ru } = require("date-fns/locale");
-const cron = require("node-cron");
+const fbaseUserDataServices = require("../fbase/fbaseUserDataServices");
+const {
+  refreshGoogleCalendarAccessToken,
+  getGoogleCalendarEvents,
+  getGoogleTasks,
+} = require("../utils/googleCalendarOperations");
 const dotenv = require("dotenv");
 const {
   getGoogleSheet,
@@ -13,7 +18,6 @@ const { GOOGLE_SHEET_ID } = process.env;
 const googleSheetCronEventCheck = async () => {
   const result = [];
   try {
-    
     const data = await getGoogleSheet(GOOGLE_SHEET_ID);
 
     if (data && data.values && data.values.length > 0) {
@@ -21,7 +25,6 @@ const googleSheetCronEventCheck = async () => {
 
       const now = new Date();
       const dayOfWeek = format(now, "EEEE", { locale: ru }).toLowerCase();
-      
 
       const daysOfWeekMap = {
         понедельник: "Mon",
@@ -86,6 +89,60 @@ const googleSheetCronEventCheck = async () => {
   }
 };
 
-module.exports = { googleSheetCronEventCheck };
+const googleCalendarCronEventCheck = async () => {
+  const result = [];
+  try {
+    const userData = await fbaseUserDataServices.getUsersData();
+
+    if (userData.length <= 0) return result;
+
+    for (const user of userData) {
+      for (const project of user.projectsData) {
+        const googleCalendarIntegration = project.integrations.find(
+          integration => integration.name === "Google Calendar"
+        );
+        if (
+          !googleCalendarIntegration ||
+          !googleCalendarIntegration.refresh_token
+        )
+          continue;
+
+        const refreshToken = googleCalendarIntegration.refresh_token;
+
+        const updatedRefreshToken = await refreshGoogleCalendarAccessToken(
+          refreshToken
+        );
+
+        if (!updatedRefreshToken) continue;
+
+        const events = await getGoogleCalendarEvents(updatedRefreshToken);
+
+        for (const event of events) {
+          if (!event.start || !event.start.dateTime || !event.description)
+            continue;
+
+          const startDateTime = event.start.dateTime;
+          const description = event.description;
+
+          const startTime = new Date(startDateTime);
+          console.log(`startTime`, startTime);
+          const now = new Date();
+          console.log(`now`, now);
+          const timeDifference = Math.abs(startTime - now) / 60000; // разница во времени в минутах
+          console.log(`timeDifference`, timeDifference);
+          if (timeDifference <= 10) {
+            result.push({ text: description });
+          }
+        }
+      }
+    }
+    console.log(`result`, result);
+    return result;
+  } catch (error) {
+    return result;
+  }
+};
+
+module.exports = { googleSheetCronEventCheck, googleCalendarCronEventCheck };
 
 googleSheetCronEventCheck();

@@ -1,5 +1,3 @@
-const fbaseUserDataServices = require("./fbase/fbaseUserDataServices");
-
 const dotenv = require("dotenv");
 const cron = require("node-cron");
 const {
@@ -10,7 +8,10 @@ const {
   isSameDay,
 } = require("date-fns");
 
-const { googleSheetCronEventCheck } = require("./utils/cronOperations");
+const {
+  googleSheetCronEventCheck,
+  googleCalendarCronEventCheck,
+} = require("./utils/cronOperations");
 const {
   escapeMarkdown,
   getRandomGreeting,
@@ -21,7 +22,12 @@ const {
   faqMessageText,
   cron1cMessageText,
 } = require("./constant/messages");
-
+const fbaseUserDataServices = require("./fbase/fbaseUserDataServices");
+const {
+  refreshGoogleCalendarAccessToken,
+  getGoogleCalendarEvents,
+  getGoogleTasks,
+} = require("./utils/googleCalendarOperations");
 const { bot } = require("./app");
 
 const cronStickerUrl = "./img/inline/1c_1.gif";
@@ -179,11 +185,27 @@ bot.on("message", async msg => {
 
 // test
 
-fbaseUserDataServices
-  .getUsersData()
-  .then(data => {
-    console.log("All User Data:", JSON.stringify(data, null, 2));
-  })
-  .catch(error => {
-    console.error("Error:", error);
-  });
+// fbaseUserDataServices
+//   .getUsersData()
+//   .then(data => {
+//     console.log("All User Data:", JSON.stringify(data, null, 2));
+//   })
+//   .catch(error => {
+//     console.error("Error:", error);
+//   });
+
+// refreshGoogleCalendarAccessToken(
+//   "1//09ggHqj96LgZdCgYIARAAGAkSNwF-L9IrUZNgDwJG59l3LqxSf0Bh5w2Q2kVB99ysBZNpUbFPoCgH0R4_8zn0SAlWDEJuh2ivXDI"
+// )
+//   .then(access_token => {
+//     console.log("New token:", access_token);
+//     return getGoogleCalendarEvents(access_token);
+//   })
+//   .then(events => {
+//     console.log("Events:", events);
+//   })
+//   .catch(error => {
+//     console.error("Error:", error);
+//   });
+
+googleCalendarCronEventCheck();
