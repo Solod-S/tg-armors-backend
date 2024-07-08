@@ -1,4 +1,12 @@
-const { parse, isWithinInterval, addMinutes, format } = require("date-fns");
+const {
+  parse,
+  isWithinInterval,
+  addMinutes,
+  format,
+  differenceInMinutes,
+  parseISO,
+  isValid,
+} = require("date-fns");
 const { ru } = require("date-fns/locale");
 const fbaseUserDataServices = require("../fbase/fbaseUserDataServices");
 const {
@@ -97,13 +105,20 @@ const googleCalendarCronEventCheck = async () => {
     if (userData.length <= 0) return result;
 
     for (const user of userData) {
+      // console.log(`user`, user);
       for (const project of user.projectsData) {
+        const { chatId } = user.tgGroupsData.find(
+          chatData => chatData.id === project.tgGroup
+        );
+
         const googleCalendarIntegration = project.integrations.find(
           integration => integration.name === "Google Calendar"
         );
+
         if (
           !googleCalendarIntegration ||
-          !googleCalendarIntegration.refresh_token
+          !googleCalendarIntegration.refresh_token ||
+          !googleCalendarIntegration.tgSelectors === 0
         )
           continue;
 
@@ -118,30 +133,102 @@ const googleCalendarCronEventCheck = async () => {
         const events = await getGoogleCalendarEvents(updatedRefreshToken);
 
         for (const event of events) {
-          if (!event.start || !event.start.dateTime || !event.description)
+          if (
+            !event.start ||
+            !event.start.dateTime ||
+            !event.description ||
+            !event.summary
+          )
             continue;
 
-          const startDateTime = event.start.dateTime;
+          const startDateTime = parseISO(event.start.dateTime);
           const description = event.description;
 
-          const startTime = new Date(startDateTime);
-          console.log(`startTime`, startTime);
+          if (!isValid(startDateTime)) continue;
+
           const now = new Date();
-          console.log(`now`, now);
-          const timeDifference = Math.abs(startTime - now) / 60000; // разница во времени в минутах
-          console.log(`timeDifference`, timeDifference);
-          if (timeDifference <= 10) {
-            result.push({ text: description });
+          const timeDifference = differenceInMinutes(startDateTime, now); // разница во времени в минутах
+
+          const containsSelector = title => {
+            return googleCalendarIntegration.tgSelectors.some(selector =>
+              title.includes(selector)
+            );
+          };
+
+          if (
+            Math.abs(timeDifference) <= 10 &&
+            containsSelector(event.summary)
+          ) {
+            result.push({ text: description, chatId });
           }
         }
       }
     }
+
     console.log(`result`, result);
     return result;
   } catch (error) {
     return result;
   }
 };
+
+// const googleCalendarCronEventCheck = async () => {
+//   const result = [];
+//   try {
+//     const userData = await fbaseUserDataServices.getUsersData();
+
+//     if (userData.length <= 0) return result;
+
+//     for (const user of userData) {
+//       for (const project of user.projectsData) {
+//         const googleCalendarIntegration = project.integrations.find(
+//           integration => integration.name === "Google Calendar"
+//         );
+//         if (
+//           !googleCalendarIntegration ||
+//           !googleCalendarIntegration.refresh_token
+//         )
+//           continue;
+
+//         const refreshToken = googleCalendarIntegration.refresh_token;
+
+//         const updatedRefreshToken = await refreshGoogleCalendarAccessToken(
+//           refreshToken
+//         );
+
+//         if (!updatedRefreshToken) continue;
+
+//         const events = await getGoogleCalendarEvents(
+//           updatedRefreshToken.access_token
+//         );
+
+//         for (const event of events) {
+//           if (!event.start || !event.start.dateTime || !event.description)
+//             continue;
+
+//           const startDateTime = parseISO(event.start.dateTime);
+//           const description = event.description;
+
+//           if (!isValid(startDateTime)) continue;
+
+//           console.log(`startTime`, startDateTime);
+//           const now = new Date();
+//           console.log(`now`, now);
+//           const timeDifference = differenceInMinutes(startDateTime, now); // разница во времени в минутах
+//           console.log(`timeDifference`, timeDifference);
+//           if (Math.abs(timeDifference) <= 10) {
+//             result.push({ text: description });
+//           }
+//         }
+//       }
+//     }
+//     console.log(`result`, result);
+//     return result;
+//   } catch (error) {
+//     console.error("Error:", error);
+//     return result;
+//   }
+// };
 
 module.exports = { googleSheetCronEventCheck, googleCalendarCronEventCheck };
 

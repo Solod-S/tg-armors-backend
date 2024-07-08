@@ -13,29 +13,41 @@ fbaseUserDataServices.getUsersData = async () => {
       const userId = userDoc.id;
       const userData = {
         id: userId,
-        ...userDoc.data(), // Включаем данные пользователя
+        ...userDoc.data(),
         projectsData: [],
         projectCategories: [],
+        tgGroupsData: [],
       };
 
       // Get projectsData subcollection
       const projectsDataRef = userDoc.ref.collection("projectsData");
+      const tgGroupsDataRef = userDoc.ref.collection("project-tg-groups");
       const projectsDataSnapshot = await projectsDataRef.get();
+      const tgGroupsDataSnapshot = await tgGroupsDataRef.get();
       projectsDataSnapshot.forEach(projectDoc => {
         // only active google projects
+
         if (
           projectDoc.data().active &&
+          projectDoc.data().tgGroup.length > 0 &&
           projectDoc
             .data()
             .integrations.find(
               integrations =>
-                integrations.active && integrations.name === "Google Calendar"
+                integrations.active &&
+                integrations.name === "Google Calendar" &&
+                integrations.tgSelectors.length > 0
             )
         )
           userData.projectsData.push({
             id: projectDoc.id,
             ...projectDoc.data(),
           });
+      });
+      tgGroupsDataSnapshot.forEach(tgDoc => {
+        userData.tgGroupsData.push({
+          ...tgDoc.data(),
+        });
       });
 
       // Get project-categories subcollection
