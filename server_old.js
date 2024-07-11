@@ -9,43 +9,34 @@ const {
 } = require("date-fns");
 
 const { googleSheetCronEventCheck } = require("./utils/cronOperations");
-const { escapeMarkdown } = require("./utils/helpers");
+const {
+  escapeMarkdown,
+  getRandomGreeting,
+  getRandomFarewell,
+} = require("./utils/helpers");
 const {
   contactsMessageText,
   faqMessageText,
   cron1cMessageText,
-  greetings,
-  farewells,
 } = require("./constant/messages");
-
-const { bot } = require("./app");
+const fbaseUserDataServices = require("./fbase/fbaseUserDataServices");
+const {
+  refreshGoogleCalendarAccessToken,
+  getGoogleCalendarEvents,
+  getGoogleTasks,
+} = require("./utils/googleCalendarOperations");
+const bot = require("./app");
 
 const cronStickerUrl = "./img/inline/1c_1.gif";
 // product
 const chatId = "-215426713";
-// test
-// const chatId = "-1002086154595";
 
 dotenv.config();
 
-function getRandomGreeting() {
-  return greetings[Math.floor(Math.random() * greetings.length)];
-}
-
-function getRandomFarewell() {
-  return farewells[Math.floor(Math.random() * farewells.length)];
-}
-
-// npm run startarmors
-// npm run stoparmors
-
-
-
-cron.schedule("* * * * *", async () => {
+cron.schedule("0 * * * *", async () => {
   try {
-    console.log(`start`);
     const tasks = await googleSheetCronEventCheck();
-    console.log(`tasks`, tasks);
+    console.log(`current tasks:`, tasks);
     if (tasks.length > 0) {
       for (const task of tasks) {
         const fullSet =
@@ -113,14 +104,14 @@ cron.schedule("0 9 * * 1-5", () => {
 });
 
 // Расписание для отправки прощаний в будние дни в 18:00 вечера (понедельник-пятница)
-cron.schedule("0 18 * * 1-5", () => {
-  bot.sendMessage(
-    chatId,
-    getRandomFarewell() +
-      "\n\nНе забувайте закрити 1С наприкінці робочого дня.",
-    { parse_mode: "Markdown" }
-  );
-});
+// cron.schedule("0 18 * * 1-5", () => {
+//   bot.sendMessage(
+//     chatId,
+//     getRandomFarewell() +
+//       "\n\nНе забувайте закрити 1С наприкінці робочого дня.",
+//     { parse_mode: "Markdown" }
+//   );
+// });
 
 // bot.sendMessage(
 //   "-215426713",
@@ -142,10 +133,20 @@ bot.setMyCommands([
 ]);
 
 bot.on("message", async msg => {
-  console.log(`msg`, msg.chat);
+  // console.log(`msg.chat`, msg.chat);
+  // console.log(`msg.text`, msg.text);
+  // console.log(`msg`, msg);
   // слушатель событий сообщения
   const chatId = msg.chat.id;
   const text = msg.text;
+
+  if (text == "@ArmorStandartBot show group id") {
+    return bot.sendMessage(
+      chatId,
+      `id: ${msg.chat.id}, title: ${msg.chat.title}, type: ${msg.chat.type}`,
+      { parse_mode: "Markdown" }
+    );
+  }
 
   if (text == "/contacts") {
     const stickerUrl = "./img/inline/girl_map.jpg";

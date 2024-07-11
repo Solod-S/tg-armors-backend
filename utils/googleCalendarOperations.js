@@ -4,7 +4,7 @@ dotenv.config();
 const CLIENT_ID = process.env.GOOGLE_CALENDAR_CLIENT_ID;
 const CLIENT_SECRET = process.env.GOOGLE_CALENDAR_CLIENT_SECRET;
 const REDIRECT_URI = "YOUR_REDIRECT_URI";
-console.log(`CLIENT_ID`, CLIENT_ID);
+
 const oauth2Client = new google.auth.OAuth2(
   CLIENT_ID,
   CLIENT_SECRET

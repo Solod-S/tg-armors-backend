@@ -118,7 +118,8 @@ const googleCalendarCronEventCheck = async () => {
         if (
           !googleCalendarIntegration ||
           !googleCalendarIntegration.refresh_token ||
-          !googleCalendarIntegration.tgSelectors === 0
+          googleCalendarIntegration.tgSelectors.length <= 0 ||
+          !googleCalendarIntegration.active
         )
           continue;
 
@@ -165,71 +166,11 @@ const googleCalendarCronEventCheck = async () => {
       }
     }
 
-    console.log(`result`, result);
+    // console.log(`result`, result);
     return result;
   } catch (error) {
     return result;
   }
 };
 
-// const googleCalendarCronEventCheck = async () => {
-//   const result = [];
-//   try {
-//     const userData = await fbaseUserDataServices.getUsersData();
-
-//     if (userData.length <= 0) return result;
-
-//     for (const user of userData) {
-//       for (const project of user.projectsData) {
-//         const googleCalendarIntegration = project.integrations.find(
-//           integration => integration.name === "Google Calendar"
-//         );
-//         if (
-//           !googleCalendarIntegration ||
-//           !googleCalendarIntegration.refresh_token
-//         )
-//           continue;
-
-//         const refreshToken = googleCalendarIntegration.refresh_token;
-
-//         const updatedRefreshToken = await refreshGoogleCalendarAccessToken(
-//           refreshToken
-//         );
-
-//         if (!updatedRefreshToken) continue;
-
-//         const events = await getGoogleCalendarEvents(
-//           updatedRefreshToken.access_token
-//         );
-
-//         for (const event of events) {
-//           if (!event.start || !event.start.dateTime || !event.description)
-//             continue;
-
-//           const startDateTime = parseISO(event.start.dateTime);
-//           const description = event.description;
-
-//           if (!isValid(startDateTime)) continue;
-
-//           console.log(`startTime`, startDateTime);
-//           const now = new Date();
-//           console.log(`now`, now);
-//           const timeDifference = differenceInMinutes(startDateTime, now); // разница во времени в минутах
-//           console.log(`timeDifference`, timeDifference);
-//           if (Math.abs(timeDifference) <= 10) {
-//             result.push({ text: description });
-//           }
-//         }
-//       }
-//     }
-//     console.log(`result`, result);
-//     return result;
-//   } catch (error) {
-//     console.error("Error:", error);
-//     return result;
-//   }
-// };
-
 module.exports = { googleSheetCronEventCheck, googleCalendarCronEventCheck };
-
-googleSheetCronEventCheck();

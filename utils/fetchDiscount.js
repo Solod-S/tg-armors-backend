@@ -1,8 +1,8 @@
 const { format, parse, isAfter, isEqual } = require("date-fns");
-const { bot } = require("../app");
+const bot = require("../app");
 const { getRows } = require("./googleSheets");
 
-const fetchDiscount = async (chatId) => {
+const fetchDiscount = async chatId => {
   const data = await getRows(2);
 
   for (let index = 0; index < data.length; index++) {

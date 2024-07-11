@@ -1,4 +1,4 @@
-const { bot } = require("../../app");
+const bot = require("../../app");
 
 const postFormData = async (req, res) => {
   const { queryId, products = [], totalPrice } = req.body;
@@ -9,7 +9,7 @@ const postFormData = async (req, res) => {
       title: "Успешная покупка",
       input_message_content: {
         message_text: ` Поздравляю с покупкой, вы приобрели товар на сумму ${totalPrice}, ${products
-          .map((item) => item.title)
+          .map(item => item.title)
           .join(", ")}`,
       },
     });
