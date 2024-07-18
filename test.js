@@ -25,13 +25,12 @@ const test = async () => {
 
     if (tasks.length > 0) {
       for (const task of tasks) {
-        const fullSet =
-          task.chatId &&
-          task.text &&
-          task.chatId.trim() !== "" &&
-          task.text.trim() !== "";
+        const fullSet = task.chatId && task.text;
+        // &&
+        // task.chatId.trim() !== "" &&
+        // task.text.trim() !== "";
         if (fullSet) {
-          const chatId = task.chatId.trim();
+          const chatId = task.chatId;
           const text = task.text.trim();
           const formattedText = formatText(text); // Форматирование текста
           const escapedText = finalFormatText(formattedText);

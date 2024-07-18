@@ -1,5 +1,10 @@
 const bot = require("./app");
-const { contactsMessageText, faqMessageText } = require("./constant/messages");
+const {
+  contactsMessageText,
+  faqMessageTextPlotter,
+  faqMessageTextGlass,
+  faqMessageTextFilm,
+} = require("./constant/messages");
 
 const setBotCommands = () => {
   bot.setMyCommands([
@@ -42,9 +47,22 @@ const setBotCommands = () => {
     }
 
     if (text == "/faq") {
-      const stickerUrl = "./img/inline/faq1.jpg";
-      await bot.sendPhoto(chatId, stickerUrl, {
-        caption: faqMessageText,
+      const faqMessageTextPlotterStickerUrl = "./img/inline/plotter.jpg";
+      await bot.sendPhoto(chatId, faqMessageTextPlotterStickerUrl, {
+        caption: faqMessageTextPlotter,
+        parse_mode: "HTML",
+      });
+      // await bot.sendMessage(chatId, faqMessageTextGlass, {
+      //   parse_mode: "HTML",
+      // });
+      const faqMessageTextGlassStickerUrl = "./img/inline/glass.jpg";
+      await bot.sendPhoto(chatId, faqMessageTextGlassStickerUrl, {
+        caption: faqMessageTextGlass,
+        parse_mode: "HTML",
+      });
+      const faqMessageTextFilmStickerUrl = "./img/inline/film.jpg";
+      await bot.sendPhoto(chatId, faqMessageTextFilmStickerUrl, {
+        caption: faqMessageTextFilm,
         parse_mode: "HTML",
       });
     }

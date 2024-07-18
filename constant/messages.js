@@ -26,11 +26,68 @@ const faqMessageText = `
     <a href="https://www.youtube.com/watch?v=iWQ6RN5Gwhc"><b>Як вставляти плівку з автоподачею на плоттері ArmorStandart ASG2</b></a>
 
     <b>Плівки/Скло:</b>
+    <a href="https://www.youtube.com/watch?v=CuB_nWQ9MLo"><b>Інструкція зі встановлення захисного скла ArmorStandart 3D ICON</b></a>
+    <a href="">https://www.youtube.com/watch?v=IeIUaO995JU<b>Інструкція зі встановлення захисного скла ArmorStandart BLVCK ICON</b></a>
+    <a href="https://www.youtube.com/watch?v=CsFy9g7y4Bs"><b>Інструкція зі встановлення захисного скла для камери ArmorStandart Camera glass</b></a>
+    <a href="https://www.youtube.com/watch?v=nKZUtJC__nY"><b>Інструкція зі встановлення захисного скла ArmorStandart GLASS.CR</b></a>
+    <a href="https://www.youtube.com/watch?v=Xv3SCvwoG9k"><b>Інструкція зі встановлення гідрогелевої плівки для планшетів ArmorStandart</b></a>
+    <a href="https://www.youtube.com/watch?v=TIrZoUKJP9c"><b>Інструкція зі встановлення гідрогелевої плівки для трекерів та смарт годинників ArmorStandart</b></a>
+    <a href="https://www.youtube.com/watch?v=durB3wG2r3I"><b>Інструкція зі встановлення захисного скла ArmorStandart PRO ANTI-SPY MATTE</b></a>
+    <a href="https://www.youtube.com/watch?v=QVcg90GyYl0"><b>Встановлення гідрогелевої плівки на смартфон ArmorStandart Classic</b></a>
+    <a href=""><b></b></a>
+    <a href=""><b></b></a>
+    <a href=""><b></b></a>
+    <a href=""><b></b></a>
+    <a href=""><b></b></a>
+    <a href=""><b></b></a>
+    <a href=""><b></b></a>
     <a href="https://www.youtube.com/watch?v=qdQBMV_HewE"><b>Як наклеїти захисну плівку на смартфон</b></a>
     <a href="https://www.youtube.com/watch?v=-quEB9pbpsE"><b>Як наклеїти захисне скло на смартфон</b></a>
     _______________
  
   `;
+
+const faqMessageTextPlotter = `
+    _______________
+  .......................................
+    <b>Faq:</b>
+  .......................................
+
+    <b>Плотери:</b>
+    <a href="https://www.youtube.com/watch?v=r6zRmYPvM7M"><b>Як замінити ножа на плотері ArmorStandart ASG</b></a> 
+    <a href="https://www.youtube.com/watch?v=vf-LtpP4ge8"><b>Як замінити ножа на плотері ArmorStandart ASG2</b></a> 
+    <a href="https://www.youtube.com/watch?v=xZMgLoGhxAg"><b>Як підключити плоттер ArmorStandart ASG2</b></a> 
+    <a href="https://www.youtube.com/watch?v=c_iGNlYQNjo"><b>Порізка планшетноі плівки на плоттері ArmorStandart ASG2</b></a> 
+    <a href="https://www.youtube.com/watch?v=swGrO_Jynaw"><b>Як вирізати плівку на планшет на плоттері ArmorStandart ASG2</b></a>
+    <a href="https://www.youtube.com/watch?v=iWQ6RN5Gwhc"><b>Як вставляти плівку з автоподачею на плоттері ArmorStandart ASG2</b></a>
+  `;
+
+const faqMessageTextGlass = `
+  .......................................
+    <b>Faq:</b>
+  .......................................
+
+    <b>Скло:</b>
+    <a href="https://www.youtube.com/watch?v=CuB_nWQ9MLo"><b>Інструкція зі встановлення захисного скла ArmorStandart 3D ICON</b></a>
+    <a href="">https://www.youtube.com/watch?v=IeIUaO995JU<b>Інструкція зі встановлення захисного скла ArmorStandart BLVCK ICON</b></a>
+    <a href="https://www.youtube.com/watch?v=CsFy9g7y4Bs"><b>Інструкція зі встановлення захисного скла для камери ArmorStandart Camera glass</b></a>
+    <a href="https://www.youtube.com/watch?v=nKZUtJC__nY"><b>Інструкція зі встановлення захисного скла ArmorStandart GLASS.CR</b></a>
+    <a href="https://www.youtube.com/watch?v=durB3wG2r3I"><b>Інструкція зі встановлення захисного скла ArmorStandart PRO ANTI-SPY MATTE</b></a>
+ 
+  `;
+
+const faqMessageTextFilm = `
+  .......................................
+    <b>Faq:</b>
+  .......................................
+    
+    <b>Плівки:</b>
+    <a href="https://www.youtube.com/watch?v=Xv3SCvwoG9k"><b>Інструкція зі встановлення гідрогелевої плівки для планшетів ArmorStandart</b></a>
+    <a href="https://www.youtube.com/watch?v=TIrZoUKJP9c"><b>Інструкція зі встановлення гідрогелевої плівки для трекерів та смарт годинників ArmorStandart</b></a>
+    <a href="https://www.youtube.com/watch?v=QVcg90GyYl0"><b>Встановлення гідрогелевої плівки на смартфон ArmorStandart Classic</b></a>
+ 
+  `;
+
 const cron1cMessageText = "*⚠️УВАГА!! Вийдіть з 1С!⚠️*";
 
 const greetings = [
@@ -107,4 +164,7 @@ module.exports = {
   cron1cMessageText,
   greetings,
   farewells,
+  faqMessageTextPlotter,
+  faqMessageTextGlass,
+  faqMessageTextFilm,
 };
