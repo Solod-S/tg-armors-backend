@@ -4,6 +4,7 @@
 [![runs with pm2](https://img.shields.io/badge/Runs%20with%20PM2-000.svg?style=flat-square&logo=pm2&labelColor=f3f3f3&logoColor=2B037A)](https://www.npmjs.com/package/pm2)
 [![runs with node-telegram-bot-api](https://img.shields.io/badge/Runs%20with%20Node_Telegram_Bot_Api-000.svg?style=flat-square&logo=telegram&labelColor=f3f3f3&logoColor=#26A5E4)](https://www.npmjs.com/package/node-telegram-bot-api)
 [![runs with google-spreadsheet](https://img.shields.io/badge/Runs%20with%20Google_Spreadsheet-000.svg?style=flat-square&logo=googlesheets&labelColor=f3f3f3&logoColor=#34A853)](https://www.npmjs.com/package/google-spreadsheet)
+[![runs with firebase](https://img.shields.io/badge/Runs%20with%20Firebase-000.svg?style=flat-square&logo=firebase&labelColor=f3f3f3&logoColor=#DB7093)](https://firebase.google.com/)
 [![runs with dotenv](https://img.shields.io/badge/Runs%20with%20dotenv-000.svg?style=flat-square&logo=dotenv&labelColor=f3f3f3&logoColor=#ECD53FE4)](https://www.npmjs.com/package/dotenv)
 [![runs with date-fns](https://img.shields.io/badge/Runs%20with%20Date_fns-000.svg?style=flat-square&logo=clockify&labelColor=f3f3f3&logoColor=#770C56)](https://www.npmjs.com/package/date-fns)
 

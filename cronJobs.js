@@ -120,6 +120,41 @@ const scheduleCronJobs = () => {
     }
   });
 
+  // Расписание каждый час ходить в гугл таблицу
+  cron.schedule("0 * * * *", async () => {
+    try {
+      const tasks = await googleSheetCronEventCheck();
+      console.log(`current google sheet's tasks:`, tasks);
+
+      if (tasks.length > 0) {
+        for (const task of tasks) {
+          const fullSet =
+            task.chatId &&
+            task.text &&
+            task.chatId.trim() !== "" &&
+            task.text.trim() !== "";
+          if (fullSet) {
+            const chatId = task.chatId.trim();
+            const text = task.text.trim();
+            const escapedText = escapeMarkdown(text);
+
+            console.log(`Sending message to ${chatId}: ${escapedText}`);
+
+            try {
+              await bot.sendMessage(chatId, escapedText, {
+                parse_mode: "MarkdownV2",
+              });
+            } catch (sendError) {
+              console.log(`Error sending message to ${chatId}: ${sendError}`);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.log(`Error in google sheet cron: ${error}`);
+    }
+  });
+
   // Расписание для отправки напоминания выйти из 1с в конце месяца
   cron.schedule("0 19 * * *", () => {
     const currentDate = new Date();
