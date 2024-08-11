@@ -4,6 +4,7 @@ const bot = require("./app");
 const {
   googleSheetCronEventCheck,
   googleCalendarCronEventCheck,
+  firebaseSchedyleEventCheck,
 } = require("./utils/cronOperations");
 const {
   escapeMarkdown,
@@ -59,9 +60,6 @@ const scheduleCronJobs = () => {
       if (tasks.length > 0) {
         for (const task of tasks) {
           const fullSet = task.chatId && task.text;
-          // &&
-          // task.chatId.trim() !== "" &&
-          // task.text.trim() !== "";
           if (fullSet) {
             const chatId = task.chatId;
             const text = task.text.trim();
@@ -85,30 +83,30 @@ const scheduleCronJobs = () => {
     }
   });
 
-  // Расписание каждый час ходить в гугл таблицу
+  // Расписание каждый час ходить в фаер бейс
   cron.schedule("0 * * * *", async () => {
     try {
-      const tasks = await googleSheetCronEventCheck();
-      console.log(`current google sheet's tasks:`, tasks);
-
+      const tasks = await firebaseSchedyleEventCheck();
+      console.log(`current fireBase tasks:`, tasks);
       if (tasks.length > 0) {
         for (const task of tasks) {
-          const fullSet =
-            task.chatId &&
-            task.text &&
-            task.chatId.trim() !== "" &&
-            task.text.trim() !== "";
+          const fullSet = task.chatId && task.text;
           if (fullSet) {
-            const chatId = task.chatId.trim();
+            const chatId = task.chatId;
             const text = task.text.trim();
             const escapedText = escapeMarkdown(text);
-
             console.log(`Sending message to ${chatId}: ${escapedText}`);
-
             try {
-              await bot.sendMessage(chatId, escapedText, {
-                parse_mode: "MarkdownV2",
-              });
+              if (task.img && task.img.length > 0) {
+                await bot.sendPhoto(chatId, task.img, {
+                  caption: escapedText,
+                  parse_mode: "MarkdownV2",
+                });
+              } else {
+                await bot.sendMessage(chatId, escapedText, {
+                  parse_mode: "MarkdownV2",
+                });
+              }
             } catch (sendError) {
               console.log(`Error sending message to ${chatId}: ${sendError}`);
             }
@@ -128,13 +126,9 @@ const scheduleCronJobs = () => {
 
       if (tasks.length > 0) {
         for (const task of tasks) {
-          const fullSet =
-            task.chatId &&
-            task.text &&
-            task.chatId.trim() !== "" &&
-            task.text.trim() !== "";
+          const fullSet = task.chatId && task.text;
           if (fullSet) {
-            const chatId = task.chatId.trim();
+            const chatId = task.chatId;
             const text = task.text.trim();
             const escapedText = escapeMarkdown(text);
 

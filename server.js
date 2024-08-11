@@ -1,13 +1,13 @@
 const { scheduleCronJobs } = require("./cronJobs");
 const { setBotCommands } = require("./botCommands");
-const fbaseUserDataServices = require("./fbase/fbaseUserDataServices");
+const { firebaseSchedyleEventCheck } = require("./utils/cronOperations");
 
 scheduleCronJobs();
 setBotCommands();
 
-async function someFunction() {
-  const result = await fbaseUserDataServices.getFireBaseScheduling();
-  console.log("Результат внутри someFunction:", result);
-}
+// async function someFunction() {
+//   const result = await firebaseSchedyleEventCheck();
+//   console.log("Результат внутри someFunction:", result);
+// }
 
-someFunction();
+// someFunction();
