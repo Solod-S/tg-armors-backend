@@ -15,7 +15,6 @@ const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 const tasks = google.tasks({ version: "v1", auth: oauth2Client });
 
 const refreshGoogleCalendarAccessToken = async refreshToken => {
-  console.log(`refreshToken`, refreshToken);
   try {
     oauth2Client.setCredentials({ refresh_token: refreshToken });
     const { credentials } = await oauth2Client.refreshAccessToken();

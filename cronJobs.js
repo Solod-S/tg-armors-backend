@@ -14,43 +14,9 @@ const {
 } = require("./utils/helpers");
 const { cron1cMessageText } = require("./constant/messages");
 const { chatId, cronStickerUrl } = require("./config");
+const fbaseUserDataServices = require("./fbase/fbaseUserDataServices");
 
 const scheduleCronJobs = () => {
-  // Расписание каждый 30 мин ходить в гугл календарь
-  // cron.schedule("*/30 * * * *", async () => {
-  //   try {
-  //     const tasks = await googleCalendarCronEventCheck();
-  //     console.log(`current google calendar tasks:`, tasks);
-
-  //     if (tasks.length > 0) {
-  //       for (const task of tasks) {
-  //         const fullSet =
-  //           task.chatId &&
-  //           task.text &&
-  //           task.chatId.trim() !== "" &&
-  //           task.text.trim() !== "";
-  //         if (fullSet) {
-  //           const chatId = task.chatId.trim();
-  //           const text = task.text.trim();
-  //           const escapedText = escapeMarkdown(text);
-
-  //           console.log(`Sending message to ${chatId}: ${escapedText}`);
-
-  //           try {
-  //             await bot.sendMessage(chatId, escapedText, {
-  //               parse_mode: "MarkdownV2",
-  //             });
-  //           } catch (sendError) {
-  //             console.log(`Error sending message to ${chatId}: ${sendError}`);
-  //           }
-  //         }
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.log(`Error in google sheet cron: ${error}`);
-  //   }
-  // });
-
   // Расписание каждый 30 мин ходить в гугл календарь
   cron.schedule("*/30 * * * *", async () => {
     try {
@@ -88,6 +54,7 @@ const scheduleCronJobs = () => {
     try {
       const tasks = await firebaseSchedyleEventCheck();
       console.log(`current fireBase tasks:`, tasks);
+
       if (tasks.length > 0) {
         for (const task of tasks) {
           const fullSet = task.chatId && task.text;
@@ -107,6 +74,7 @@ const scheduleCronJobs = () => {
                   parse_mode: "MarkdownV2",
                 });
               }
+              await fbaseUserDataServices.addSchedulePost(task);
             } catch (sendError) {
               console.log(`Error sending message to ${chatId}: ${sendError}`);
             }

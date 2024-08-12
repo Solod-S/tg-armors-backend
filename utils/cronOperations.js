@@ -96,7 +96,7 @@ const googleSheetCronEventCheck = async () => {
         }
       }
     }
-    console.log(result);
+
     return result;
   } catch (error) {
     console.log(`Error in google sheet cron event check: ${error}`);
@@ -112,7 +112,6 @@ const googleCalendarCronEventCheck = async () => {
     if (userData.length <= 0) return result;
 
     for (const user of userData) {
-      // console.log(`user`, user);
       for (const project of user.projectsData) {
         const { chatId } = user.tgGroupsData.find(
           chatData => chatData.id === project.tgGroup
@@ -173,7 +172,6 @@ const googleCalendarCronEventCheck = async () => {
       }
     }
 
-    // console.log(`result`, result);
     return result;
   } catch (error) {
     console.error("Error getting google calendar cron event check:", error);
@@ -188,6 +186,8 @@ const firebaseSchedyleEventCheck = async () => {
 
     // проходимся по пользователям
     for (const userDoc of usersSnapshot.docs) {
+      const { owner_uid, email } = userDoc.data();
+
       const tgGroupsDataRef = userDoc.ref.collection("project-tg-groups");
       const tgGroupsDataSnapshot = await tgGroupsDataRef.get();
       const tgGroupsData = [];
@@ -200,7 +200,6 @@ const firebaseSchedyleEventCheck = async () => {
       });
       if (tgGroupsData.length <= 0) continue;
 
-      const projectIntegrationFBArr = [];
       const projectsSnapshot = await userDoc.ref
         .collection("projectsData")
         .where("active", "==", true)
@@ -252,7 +251,7 @@ const firebaseSchedyleEventCheck = async () => {
         }
         if (!chatId) continue;
 
-        const { integrations } = projectData;
+        const { integrations, projectId } = projectData;
 
         // Фильтруем integrations
         const integrationsData = integrations.filter(
@@ -284,6 +283,9 @@ const firebaseSchedyleEventCheck = async () => {
                 if (oncePerDaysSchedulePosts.length <= 0) {
                   const { img, message, id, name } = schedule;
                   result.push({
+                    owner_uid,
+                    projectId,
+                    email,
                     chatId,
                     img,
                     text: message,
@@ -316,6 +318,9 @@ const firebaseSchedyleEventCheck = async () => {
                   if (needToGenerateOncePerDaysPost) {
                     const { img, message, id, name } = schedule;
                     result.push({
+                      owner_uid,
+                      projectId,
+                      email,
                       chatId,
                       img,
                       text: message,

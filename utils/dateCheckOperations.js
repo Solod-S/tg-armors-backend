@@ -1,11 +1,13 @@
 const moment = require("moment");
+const { format, addHours } = require("date-fns");
 
-const checkCurrentDateIsAfterLastPost = async date => {
+const checkCurrentDateIsAfterLastPost = date => {
   const lastPublicationDate = moment(date);
   const currentDate = moment();
   if (currentDate.isAfter(lastPublicationDate, "day")) {
     return true;
   }
+
   return false;
 };
 
@@ -38,11 +40,11 @@ const checkStartDateToGenerateArticle = async inputDate => {
   }
 };
 
-function checkEndTypeToGenerateArticle(
+const checkEndTypeToGenerateArticle = (
   repeatEndType,
   repeatEndValue,
   currentContentLenght
-) {
+) => {
   switch (true) {
     case repeatEndType === "date":
       const endDateHasPassed = moment().isAfter(moment(repeatEndValue), "day");
@@ -63,7 +65,7 @@ function checkEndTypeToGenerateArticle(
     default:
       return true;
   }
-}
+};
 
 module.exports = {
   checkCurrentDateIsAfterLastPost,

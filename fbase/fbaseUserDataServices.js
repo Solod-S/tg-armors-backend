@@ -1,4 +1,6 @@
-const { db } = require("./fbaseConfig");
+const { db, getFBTimestamp } = require("./fbaseConfig");
+
+const shortid = require("shortid");
 
 const fbaseUserDataServices = {};
 
@@ -76,6 +78,54 @@ fbaseUserDataServices.getUsersData = async () => {
   } catch (error) {
     console.error("Error getting user data:", error);
     throw error;
+  }
+};
+
+fbaseUserDataServices.addSchedulePost = async data => {
+  try {
+    const {
+      owner_uid,
+      projectId,
+      email,
+      chatId,
+      img,
+      text,
+      scheduleId,
+      scheduleName,
+    } = data;
+
+    // Генерация уникального ID документа
+    const docId = shortid.generate();
+
+    // Подготовка данных для записи
+    const post = {
+      owner_uid,
+      projectId,
+      email,
+      chatId,
+      img,
+      text,
+      scheduleId,
+      scheduleName,
+      id: docId,
+      dateCreated: getFBTimestamp(), // Добавление отформатированной временной метки
+    };
+
+    // Путь до подколлекции
+    const docRef = db
+      .collection(
+        `users/${owner_uid}/projectsData/${projectId}/firebaseShedulePosts`
+      )
+      .doc(docId);
+
+    // Запись данных в документ
+    await docRef.set(post);
+
+    console.log("Document successfully written at 'addSchedulePost'!");
+    return { success: true, id: docId };
+  } catch (error) {
+    console.error("Error writing document at 'addSchedulePost': ", error);
+    return { success: false, error: error.message };
   }
 };
 
