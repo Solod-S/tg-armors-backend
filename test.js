@@ -1,7 +1,10 @@
 const dotenv = require("dotenv");
 const bot = require("./app");
 
-const { googleCalendarCronEventCheck } = require("./utils/cronOperations");
+const {
+  googleCalendarCronEventCheck,
+  googleSheetCronEventCheck,
+} = require("./utils/cronOperations");
 const {
   getRandomGreeting,
   getRandomFarewell,
@@ -52,4 +55,6 @@ const test = async () => {
   }
 };
 
-test();
+// test();
+
+// googleSheetCronEventCheck();

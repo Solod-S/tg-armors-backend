@@ -96,7 +96,6 @@ const googleSheetCronEventCheck = async () => {
         }
       }
     }
-
     return result;
   } catch (error) {
     console.log(`Error in google sheet cron event check: ${error}`);
@@ -123,13 +122,15 @@ const googleCalendarCronEventCheck = async () => {
 
         if (
           !googleCalendarIntegration ||
-          !googleCalendarIntegration.refresh_token ||
+          !googleCalendarIntegration.credentials ||
+          !googleCalendarIntegration.credentials.refresh_token ||
           googleCalendarIntegration.tgSelectors.length <= 0 ||
           !googleCalendarIntegration.active
         )
           continue;
 
-        const refreshToken = googleCalendarIntegration.refresh_token;
+        const refreshToken =
+          googleCalendarIntegration.credentials.refresh_token;
 
         const updatedRefreshToken = await refreshGoogleCalendarAccessToken(
           refreshToken
