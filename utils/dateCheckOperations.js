@@ -2,13 +2,9 @@ const moment = require("moment");
 const { format, addHours } = require("date-fns");
 
 const checkCurrentDateIsAfterLastPost = date => {
-  const lastPublicationDate = moment(date);
-  const currentDate = moment();
-  if (currentDate.isAfter(lastPublicationDate, "day")) {
-    return true;
-  }
-
-  return false;
+  const lastPublicationDate = moment.utc(date).startOf("day"); // Привести дату к началу дня в UTC
+  const currentDate = moment().startOf("day"); // Привести текущую дату к началу дня в локальной временной зоне
+  return currentDate.isAfter(lastPublicationDate);
 };
 
 const checkTimeToGenerateArticle = async inputTime => {
@@ -67,9 +63,45 @@ const checkEndTypeToGenerateArticle = (
   }
 };
 
+const checkMonthlyPublicationDateHasArrived = (
+  startDate,
+  monthlyIntervalLastDay
+) => {
+  const today = moment();
+  const currentDayOfMonth = today.date();
+  const lastDayOfMonth = today.endOf("month").date();
+  const lastSundayOfMonth = today.endOf("month").day("Sunday").date();
+  const dayOfMonthToGenerate = moment(startDate).date();
+
+  if (
+    monthlyIntervalLastDay === "lastDay" &&
+    lastDayOfMonth === currentDayOfMonth
+  ) {
+    return true;
+  }
+
+  if (
+    monthlyIntervalLastDay === "lastSunday" &&
+    lastSundayOfMonth === currentDayOfMonth
+    // && moment(startDate).isSame(lastSundayOfMonth, "day") // Check if the specified date is the last Sunday of the month
+  ) {
+    return true;
+  }
+
+  if (
+    monthlyIntervalLastDay === "disable" &&
+    dayOfMonthToGenerate === currentDayOfMonth
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
 module.exports = {
   checkCurrentDateIsAfterLastPost,
   checkTimeToGenerateArticle,
   checkStartDateToGenerateArticle,
   checkEndTypeToGenerateArticle,
+  checkMonthlyPublicationDateHasArrived,
 };

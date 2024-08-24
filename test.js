@@ -4,6 +4,7 @@ const bot = require("./app");
 const {
   googleCalendarCronEventCheck,
   googleSheetCronEventCheck,
+  firebaseSchedyleEventCheck,
 } = require("./utils/cronOperations");
 const {
   getRandomGreeting,
@@ -58,3 +59,4 @@ const test = async () => {
 // test();
 
 // googleSheetCronEventCheck();
+firebaseSchedyleEventCheck();

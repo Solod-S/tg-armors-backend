@@ -1,4 +1,5 @@
 const dotenv = require("dotenv");
+const moment = require("moment");
 const {
   parse,
   isWithinInterval,
@@ -15,6 +16,7 @@ const {
   checkTimeToGenerateArticle,
   checkStartDateToGenerateArticle,
   checkEndTypeToGenerateArticle,
+  checkMonthlyPublicationDateHasArrived,
 } = require("./dateCheckOperations");
 const fbaseUserDataServices = require("../fbase/fbaseUserDataServices");
 const {
@@ -155,8 +157,14 @@ const googleCalendarCronEventCheck = async () => {
           if (!isValid(startDateTime)) continue;
 
           const now = new Date();
-          const timeDifference = differenceInMinutes(startDateTime, now); // разница во времени в минутах
 
+          // GMT +3
+          const kievNowTime = new Date(now.getTime() + 3 * 60 * 60 * 1000);
+
+          const timeDifference = differenceInMinutes(
+            startDateTime,
+            kievNowTime
+          ); // разница во времени в минутах
           const containsSelector = title => {
             return googleCalendarIntegration.tgSelectors.some(selector =>
               title.includes(selector)
@@ -227,7 +235,7 @@ const firebaseSchedyleEventCheck = async () => {
 
           const articlesSnapshot = await articlesRef
             .orderBy("dateCreated", "desc")
-            .limit(40)
+            .limit(10)
             .get();
 
           const articlesArray = articlesSnapshot.docs.map(articleDoc =>
@@ -277,7 +285,8 @@ const firebaseSchedyleEventCheck = async () => {
                 checkStartDateToGenerateArticle(schedule.startDate) &&
                 checkEndTypeToGenerateArticle(
                   schedule.repeatEndType,
-                  schedule.endDate ? schedule.endDate : null
+                  schedule.endDate ? schedule.endDate : null,
+                  await getPostsLength(schedule.id)
                 ):
                 const oncePerDaysSchedulePosts = await getPosts(schedule.id);
 
@@ -303,7 +312,6 @@ const firebaseSchedyleEventCheck = async () => {
                       lastPostDate = dateCreated;
                     }
                   });
-
                   let needToGenerateOncePerDaysPost = false;
 
                   if (lastPostDate) {
@@ -331,6 +339,121 @@ const firebaseSchedyleEventCheck = async () => {
                   }
                 }
                 break;
+              // FOR WEEKLY GENERATING ONLY
+              case schedule.generationIntervalType === "weekly" &&
+                checkTimeToGenerateArticle(schedule.selectedTime) &&
+                checkStartDateToGenerateArticle(schedule.startDate) &&
+                checkEndTypeToGenerateArticle(
+                  schedule.repeatEndType,
+                  schedule.endDate ? schedule.endDate : null,
+                  await getPostsLength(schedule.id)
+                ):
+                let currentDate = new Date();
+
+                let currentDay = currentDate.getDay();
+                let daysOfWeekText = [
+                  "sunday",
+                  "monday",
+                  "tuesday",
+                  "wednesday",
+                  "thursday",
+                  "friday",
+                  "saturday",
+                ];
+
+                currentDay = daysOfWeekText[currentDay];
+                const dayOfWeek = moment(schedule.startDate)
+                  .format("dddd")
+                  .toLowerCase();
+                const weeklySchedulePosts = await getPosts(schedule.id);
+                let lastPostDate = null;
+
+                weeklySchedulePosts.forEach(postsData => {
+                  const { dateCreated } = postsData;
+
+                  if (!lastPostDate) {
+                    lastPostDate = dateCreated;
+                  }
+                });
+
+                const needToGenerateWeeklyPosts =
+                  currentDay === dayOfWeek &&
+                  (weeklySchedulePosts.length === 0 ||
+                    lastPostDate === null ||
+                    (lastPostDate &&
+                      lastPostDate?.toDate().getFullYear() !==
+                        currentDate.getFullYear()) ||
+                    lastPostDate.toDate().getMonth() !==
+                      currentDate.getMonth() ||
+                    lastPostDate.toDate().getDate() !== currentDate.getDate());
+
+                if (needToGenerateWeeklyPosts) {
+                  const { img, message, id, name } = schedule;
+                  result.push({
+                    owner_uid,
+                    projectId,
+                    email,
+                    chatId,
+                    img,
+                    text: message,
+                    scheduleId: id,
+                    scheduleName: name,
+                  });
+                }
+                break;
+
+              // FOR MONTHLY GENERATING ONLY
+              case schedule.generationIntervalType === "monthly" &&
+                checkTimeToGenerateArticle(schedule.selectedTime) &&
+                checkStartDateToGenerateArticle(schedule.startDate) &&
+                checkMonthlyPublicationDateHasArrived(
+                  schedule.startDate,
+                  schedule.monthlyIntervalLastDay
+                ) &&
+                checkEndTypeToGenerateArticle(
+                  schedule.repeatEndType,
+                  schedule.endDate ? schedule.endDate : null,
+                  await getPostsLength(schedule.id)
+                ):
+                const currentMonthDate = new Date();
+                let lastMonthlyPostDate = null;
+
+                let monthlyPosts = await getPosts(schedule.id);
+
+                monthlyPosts.forEach(postsData => {
+                  const { dateCreated } = postsData;
+
+                  if (!lastMonthlyPostDate) {
+                    lastMonthlyPostDate = dateCreated;
+                  }
+                });
+
+                const needToGenerateMonthlyArticle =
+                  monthlyPosts.length === 0 ||
+                  lastMonthlyPostDate === null ||
+                  (lastMonthlyPostDate &&
+                    lastMonthlyPostDate?.toDate().getFullYear() !==
+                      currentMonthDate.getFullYear()) ||
+                  lastMonthlyPostDate.toDate().getMonth() !==
+                    currentMonthDate.getMonth() ||
+                  lastMonthlyPostDate.toDate().getDate() !==
+                    currentMonthDate.getDate();
+
+                if (needToGenerateMonthlyArticle) {
+                  const { img, message, id, name } = schedule;
+                  result.push({
+                    owner_uid,
+                    projectId,
+                    email,
+                    chatId,
+                    img,
+                    text: message,
+                    scheduleId: id,
+                    scheduleName: name,
+                  });
+                }
+
+                break;
 
               default:
                 break;
@@ -339,7 +462,7 @@ const firebaseSchedyleEventCheck = async () => {
         }
       }
     }
-
+    console.log(`result`, result);
     return result;
   } catch (error) {
     console.error("Error getting firebase schedyle event check:", error);
