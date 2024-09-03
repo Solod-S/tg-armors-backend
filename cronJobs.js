@@ -1,4 +1,5 @@
 const cron = require("node-cron");
+const axios = require("axios");
 const { endOfMonth, isWeekend, subDays, isSameDay } = require("date-fns");
 const bot = require("./app");
 const {
@@ -11,6 +12,7 @@ const {
   getRandomGreeting,
   finalFormatText,
   formatText,
+  isImageUrl,
 } = require("./utils/helpers");
 const { cron1cMessageText } = require("./constant/messages");
 const { chatId, cronStickerUrl } = require("./config");
@@ -70,19 +72,40 @@ const scheduleCronJobs = () => {
             const chatId = task.chatId;
             const text = task.text.trim();
             const escapedText = escapeMarkdown(text);
-            console.log(`Sending message to ${chatId}: ${escapedText}`);
+
             try {
+              let validImages = [];
               if (task.img && task.img.length > 0) {
-                await bot.sendPhoto(chatId, task.img, {
-                  caption: escapedText,
+                // Проверяем каждую ссылку на изображение
+                const imageCheckPromises = await task.img.map(url =>
+                  isImageUrl(url)
+                );
+
+                const imageCheckResults = await Promise.all(imageCheckPromises);
+
+                // Фильтруем только рабочие ссылки
+                validImages = task.img.filter(
+                  (url, index) => imageCheckResults[index]
+                );
+              }
+
+              if (validImages.length > 0) {
+                const media = validImages.map((url, index) => ({
+                  type: "photo",
+                  media: url,
+                  caption: index === 0 ? escapedText : "",
                   parse_mode: "MarkdownV2",
-                });
+                }));
+
+                await bot.sendMediaGroup(chatId, media);
               } else {
+                // Если нет валидных изображений, отправляем только текст
                 await bot.sendMessage(chatId, escapedText, {
                   parse_mode: "MarkdownV2",
                 });
               }
-              await fbaseUserDataServices.addSchedulePost(task);
+
+              // await fbaseUserDataServices.addSchedulePost(task);
             } catch (sendError) {
               console.log(`Error sending message to ${chatId}: ${sendError}`);
             }
@@ -196,3 +219,59 @@ const scheduleCronJobs = () => {
 module.exports = {
   scheduleCronJobs,
 };
+
+const test = async () => {
+  // try {
+  //   console.log(
+  //     `* Расписание каждый час ходить в фаер бейс:`,
+  //     new Date().toLocaleString()
+  //   );
+  //   const tasks = await firebaseSchedyleEventCheck();
+  //   console.log(`current fireBase tasks:`, tasks);
+  //   if (tasks.length > 0) {
+  //     for (const task of tasks) {
+  //       const fullSet = task.chatId && task.text;
+  //       if (fullSet) {
+  //         const chatId = task.chatId;
+  //         const text = task.text.trim();
+  //         const escapedText = escapeMarkdown(text);
+  //         try {
+  //           let validImages = [];
+  //           if (task.img && task.img.length > 0) {
+  //             // Проверяем каждую ссылку на изображение
+  //             const imageCheckPromises = await task.img.map(url =>
+  //               isImageUrl(url)
+  //             );
+  //             const imageCheckResults = await Promise.all(imageCheckPromises);
+  //             // Фильтруем только рабочие ссылки
+  //             validImages = task.img.filter(
+  //               (url, index) => imageCheckResults[index]
+  //             );
+  //           }
+  //           if (validImages.length > 0) {
+  //             const media = validImages.map((url, index) => ({
+  //               type: "photo",
+  //               media: url,
+  //               caption: index === 0 ? escapedText : "",
+  //               parse_mode: "MarkdownV2",
+  //             }));
+  //             await bot.sendMediaGroup(chatId, media);
+  //           } else {
+  //             // Если нет валидных изображений, отправляем только текст
+  //             await bot.sendMessage(chatId, escapedText, {
+  //               parse_mode: "MarkdownV2",
+  //             });
+  //           }
+  //           await fbaseUserDataServices.addSchedulePost(task);
+  //         } catch (sendError) {
+  //           console.log(`Error sending message to ${chatId}: ${sendError}`);
+  //         }
+  //       }
+  //     }
+  //   }
+  // } catch (error) {
+  //   console.log(`Error in google sheet cron: ${error}`);
+  // }
+};
+
+test();

@@ -1,5 +1,5 @@
 const { greetings, farewells } = require("../constant/messages");
-
+const axios = require("axios"); // Убедитесь, что axios установлен
 function escapeMarkdown(text) {
   return text.replace(/([_*[\]()~`>#+-=|{}.!])/g, "\\$1");
 }
@@ -35,10 +35,30 @@ function formatText(text) {
     .trim(); // Удаление лишних пробелов в начале и конце строки
 }
 
+// async function isImageUrl(url) {
+//   try {
+//     const response = await axios.head(url);
+//     return response.headers["content-type"].startsWith("image/");
+//   } catch (error) {
+//     return false;
+//   }
+// }
+async function isImageUrl(url) {
+  try {
+    const response = await axios.get(url, { responseType: "arraybuffer" });
+    const contentType = response.headers["content-type"];
+    return contentType.startsWith("image/");
+  } catch (error) {
+    console.error(`* ${url}: ${error.message} - image is not available`);
+    return false;
+  }
+}
+
 module.exports = {
   escapeMarkdown,
   getRandomGreeting,
   getRandomFarewell,
   finalFormatText,
   formatText,
+  isImageUrl,
 };

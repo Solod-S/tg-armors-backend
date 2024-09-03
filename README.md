@@ -4,62 +4,50 @@
 [![runs with pm2](https://img.shields.io/badge/Runs%20with%20PM2-000.svg?style=flat-square&logo=pm2&labelColor=f3f3f3&logoColor=2B037A)](https://www.npmjs.com/package/pm2)
 [![runs with node-telegram-bot-api](https://img.shields.io/badge/Runs%20with%20Node_Telegram_Bot_Api-000.svg?style=flat-square&logo=telegram&labelColor=f3f3f3&logoColor=#26A5E4)](https://www.npmjs.com/package/node-telegram-bot-api)
 [![runs with google-spreadsheet](https://img.shields.io/badge/Runs%20with%20Google_Spreadsheet-000.svg?style=flat-square&logo=googlesheets&labelColor=f3f3f3&logoColor=#34A853)](https://www.npmjs.com/package/google-spreadsheet)
-[![runs with firebase](https://img.shields.io/badge/Runs%20with%20Firebase-000.svg?style=flat-square&logo=firebase&labelColor=f3f3f3&logoColor=#DB7093)](https://firebase.google.com/)
+[![runs with google-calendar](https://img.shields.io/badge/Runs%20with%20Google_Calendar-000.svg?style=flat-square&logo=googlecalendar&labelColor=f3f3f3&logoColor=#34A853)](https://www.npmjs.com/package/google-spreadsheet)
+[![runs with firebase](https://img.shields.io/badge/Runs%20with%20Firebase-000.svg?style=firebase&logo=firebase&labelColor=f3f3f3&logoColor=EB844E)](https://www.npmjs.com/package/date-fns)
 [![runs with dotenv](https://img.shields.io/badge/Runs%20with%20dotenv-000.svg?style=flat-square&logo=dotenv&labelColor=f3f3f3&logoColor=#ECD53FE4)](https://www.npmjs.com/package/dotenv)
 [![runs with date-fns](https://img.shields.io/badge/Runs%20with%20Date_fns-000.svg?style=flat-square&logo=clockify&labelColor=f3f3f3&logoColor=#770C56)](https://www.npmjs.com/package/date-fns)
 
-# Megabite Telegram Bot
+# Armorstandart Telegram Bot
 
-**_Built using NodeJS, Node Telegram Bot Api, Google Spreadsheet, P(rocess) M(anager) 2, Dotenv, Date-fns_**.
+**_Built using NodeJS, Firebase, Node Telegram Bot Api, Google Spreadsheet, GoogleAPIs, P(rocess) M(anager) 2, Dotenv, Date-fns_**.
 
 ![MegaBot Demo](/img//1-min.jpg)
 
 ## Project Description
 
-The project is a telegram bot that provides users with convenient access to information about the online store, product range, promotions, promotional codes and feedback. The bot is built to facilitate the user experience, provide important information, and provide direct communication with customers. The bot can respond to user commands and questions, provide links, respond to queries, and help navigate information.
+The project is a telegram bot that provides users with convenient access to information about the online store, product range and faqes. The bot is built to facilitate the user experience, provide important information, and provide direct communication with customers. The bot can respond to user commands and questions, provide links, respond to queries, and help navigate information. Additionally, the bot is capable of scheduling messages in chats, pulling content for these messages from various sources.
 
 ## The main functions of the bot:
 
 ![MegaBot Demo](/img//3-min.jpg)
 
-### 1. Web application:
+### Important information inside the bot:
 
-The bot provides access to the React web application, where users can get acquainted with the rich assortment of the online store in detail. Here they have the opportunity not only to search for products, view descriptions and characteristics, but also to find useful information, such as:
+The bot provides valuable information about the store, such as contact details, address, opening hours, and other relevant details. Additionally, the bot is capable of scheduling messages in chats, pulling content for these messages from various sources, including:
 
-- contact details: Users can easily find ways to contact the store, including email, phone number, and store address. This provides a direct communication channel for questions and requests.
-- return policy: Important information about the return and exchange policy, which allows buyers to be sure that their interests are protected when buying.
-- shipping information: A detailed description of shipping methods, times and costs so that customers can evaluate the options available.
-- information about current promotions: Important information about current promotions.
-- feedback form: Direct communication with the store.
-
-### 2. Feedback form inside the bot:
-
-Users can use a special form provided by the bot to submit a request or feedback. This provides a direct line of communication between customers and the store.
-
-### 3. Promotions and promo codes inside the bot:
-
-The bot provides information about current promotions, discounts and available promo codes. Users can be aware of special offers and save on purchases.
-
-### 4. Important information inside the bot:
-
-The bot provides useful information about the store, such as contact details, address, opening hours, and other details.
+- Google Sheets
+- Firebase
+- Google Calendar
 
 ### Advantages:
 
 Improved user experience and customer service.
-Direct access to the assortment and promotions of the store.
-Possibility of quick feedback and support.
+Direct access to FAQs.
 Simple interaction with the bot through natural language.
-The "Telegram Bot for Online Store" project was created to provide convenient and effective ways of interaction between the store and its customers, as well as to provide quick access to information about the store's products and offers.
+Automated message scheduling and delivery, enhancing communication and engagement with customers.
 
 ## Technologies Used
 
 - Node.js: The project is built on the Node.js runtime environment, allowing for server-side JavaScript execution and facilitating asynchronous event-driven programming.
 - PM2: PM2 is used as a process manager for Node.js applications. It ensures application stability by handling process management, monitoring, and automatic restarts.
 - Node-telegram-bot-api: This library provides a straightforward interface for interacting with the Telegram Bot API. It enables the bot to send and receive messages, respond to commands, and manage user interactions within the Telegram platform.
+- Firebase: Firebase is used for storing and retrieving data, particularly for managing content scheduling and storing user interactions. It provides real-time database capabilities and cloud storage solutions, allowing the bot to efficiently determine when and where to post content.
+- Google APIs: Google APIs are used to integrate with services like Google Calendar and Google Sheets. This enables the bot to retrieve scheduling information and content details to automate posting at the right time and place.
+- Google-spreadsheet: The google-spreadsheet library enables integration with Google Sheets. It allows the bot to fetch and update data stored in Google Sheets, facilitating dynamic content management.
 - Date-fns: The date-fns library is employed for handling date and time manipulation tasks. It simplifies parsing, formatting, and calculating dates in a user-friendly manner.
 - Dotenv: Dotenv is used for managing environment variables within the project. It helps in securely storing configuration information and sensitive data.
-- Google-spreadsheet: The google-spreadsheet library enables integration with Google Sheets. It allows the bot to fetch and update data stored in Google Sheets, facilitating dynamic content management.
 - Morgan: Morgan is a logging middleware used to generate detailed request logs. It helps in monitoring and debugging the bot's HTTP requests and responses.
 - Shortid: The shortid library generates short and unique IDs, which can be useful for creating identifiers for various data entries or interactions.
 
@@ -71,7 +59,9 @@ The "Telegram Bot for Online Store" project was created to provide convenient an
     pm2
     node-telegram-bot-api
     date-fns
+    firebase-admin
     google-spreadsheet
+    googleapis
     morgan
     shortid
 
@@ -82,7 +72,7 @@ The "Telegram Bot for Online Store" project was created to provide convenient an
 1.  Clone the project from github. Change "myproject" to your project name.
 
 ```bash
-git clone https://github.com/Solod-S/tg-web-app-react-megabite-backend.git ./myproject
+git clone https://github.com/Solod-S/tg-armors-backend.git ./myproject
 ```
 
 ### Using manual download ZIP
@@ -93,12 +83,13 @@ git clone https://github.com/Solod-S/tg-web-app-react-megabite-backend.git ./myp
 ### Replace values with yours in .env!! Exemple of `.env` file.
 
 ```env
-PORT = YOUR_PORT;
-TOKEN = BOT_TOKEN;
-WEB_APP_URL = LINK_TO_PWA;
+BOT_TOKEN = BOT_TOKEN;
+
+GOOGLE_CALENDAR_CLIENT_ID = YOUR_GOOGLE_CALENDAR_CLIENT_ID
+GOOGLE_CALENDAR_CLIENT_SECRET = YOUR_GOOGLE_CALENDAR_CLIENT_SECRET
 ```
 
-### Copy to main directory google sheets api credentials json file. Exemple of `.json` file.
+### Copy to main directory google sheets api credentials json file. Exemple of `googleSheetsApiCredentials.json` file.
 
 ```json
 {
@@ -116,16 +107,29 @@ WEB_APP_URL = LINK_TO_PWA;
 }
 ```
 
+### Copy to main directory firebase admin credentials json file. Exemple of `firebase-admin-sdk.json` file.
+
+```json
+{
+  "type": "service_account",
+  "project_id": "",
+  "private_key_id": "",
+  "private_key": "",
+  "client_id": "",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "",
+  "universe_domain": "googleapis.com"
+}
+```
+
 ### Install npm dependencies after installing (Git or manual download)
 
 ```bash
 cd myproject
 npm install
 ```
-
-## Future Plans
-
-- improve google spreadsheet functions
 
 ## Contributing
 
@@ -135,5 +139,3 @@ the changes.
 
 **_NOTE: PLEASE LET ME KNOW IF YOU DISCOVERED ANY BUG OR YOU HAVE ANY
 SUGGESTIONS_**
-
-<!-- https://www.npmjs.com/package/react-image-gallery -->
