@@ -105,7 +105,7 @@ const scheduleCronJobs = () => {
                 });
               }
 
-              // await fbaseUserDataServices.addSchedulePost(task);
+              await fbaseUserDataServices.addSchedulePost(task);
             } catch (sendError) {
               console.log(`Error sending message to ${chatId}: ${sendError}`);
             }

@@ -395,7 +395,7 @@ fbaseUserDataServices.getFireBaseScheduling = async () => {
                   (weeklyArticles.length === 0 ||
                     lastArticleDate === null ||
                     (lastArticleDate &&
-                      lastArticleDate?.toDate().getFullYear() !==
+                      lastArticleDate.toDate().getFullYear() !==
                         currentDate.getFullYear()) ||
                     lastArticleDate.toDate().getMonth() !==
                       currentDate.getMonth() ||
@@ -526,7 +526,7 @@ fbaseUserDataServices.getFireBaseScheduling = async () => {
                   monthlyArticles.length === 0 ||
                   lastMonthlyArticleDate === null ||
                   (lastMonthlyArticleDate &&
-                    lastMonthlyArticleDate?.toDate().getFullYear() !==
+                    lastMonthlyArticleDate.toDate().getFullYear() !==
                       currentMonthDate.getFullYear()) ||
                   lastMonthlyArticleDate.toDate().getMonth() !==
                     currentMonthDate.getMonth() ||
