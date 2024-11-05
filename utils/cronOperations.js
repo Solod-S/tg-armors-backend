@@ -289,43 +289,8 @@ const firebaseSchedyleEventCheck = async () => {
                   await getPostsLength(schedule.id)
                 ):
                 const oncePerDaysSchedulePosts = await getPosts(schedule.id);
-                console.log(
-                  `all`,
-                  schedule.generationIntervalType === "oncePerDays" &&
-                    checkTimeToGenerateArticle(schedule.selectedTime) &&
-                    checkStartDateToGenerateArticle(schedule.startDate) &&
-                    checkEndTypeToGenerateArticle(
-                      schedule.repeatEndType,
-                      schedule.endDate ? schedule.endDate : null,
-                      await getPostsLength(schedule.id)
-                    )
-                );
-                if (oncePerDaysSchedulePosts.length <= 0) {
-                  console.log(
-                    `checkTimeToGenerateArticle(schedule.selectedTime)`,
-                    checkTimeToGenerateArticle(schedule.selectedTime)
-                  );
-                  console.log(
-                    `checkStartDateToGenerateArticle(schedule.startDate)`,
-                    checkStartDateToGenerateArticle(schedule.startDate)
-                  );
-                  console.log(
-                    `checkEndTypeToGenerateArticle(
-                      schedule.repeatEndType,
-                      schedule.endDate ? schedule.endDate : null,
-                      await getPostsLength(schedule.id)
-                    )`,
-                    checkEndTypeToGenerateArticle(
-                      schedule.repeatEndType,
-                      schedule.endDate ? schedule.endDate : null,
-                      await getPostsLength(schedule.id)
-                    )
-                  );
-                  console.log(
-                    `oncePerDaysSchedulePosts.length`,
-                    oncePerDaysSchedulePosts.length
-                  );
 
+                if (oncePerDaysSchedulePosts.length <= 0) {
                   const { img, message, id, name } = schedule;
                   result.push({
                     owner_uid,
@@ -333,6 +298,7 @@ const firebaseSchedyleEventCheck = async () => {
                     email,
                     chatId,
                     img,
+                    video: schedule.video,
                     text: message,
                     scheduleId: id,
                     scheduleName: name,
@@ -367,34 +333,11 @@ const firebaseSchedyleEventCheck = async () => {
                       email,
                       chatId,
                       img,
+                      video: schedule.video,
                       text: message,
                       scheduleId: id,
                       scheduleName: name,
                     });
-                    console.log(
-                      `checkTimeToGenerateArticle(schedule.selectedTime)`,
-                      checkTimeToGenerateArticle(schedule.selectedTime)
-                    );
-                    console.log(
-                      `checkStartDateToGenerateArticle(schedule.startDate)`,
-                      checkStartDateToGenerateArticle(schedule.startDate)
-                    );
-                    console.log(
-                      `checkEndTypeToGenerateArticle(
-                      schedule.repeatEndType,
-                      schedule.endDate ? schedule.endDate : null,
-                      await getPostsLength(schedule.id)
-                    )`,
-                      checkEndTypeToGenerateArticle(
-                        schedule.repeatEndType,
-                        schedule.endDate ? schedule.endDate : null,
-                        await getPostsLength(schedule.id)
-                      )
-                    );
-                    console.log(
-                      `oncePerDaysSchedulePosts.length`,
-                      oncePerDaysSchedulePosts.length
-                    );
                   }
                 }
                 break;
@@ -407,12 +350,6 @@ const firebaseSchedyleEventCheck = async () => {
                   schedule.endDate ? schedule.endDate : null,
                   await getPostsLength(schedule.id)
                 ):
-                console.log(
-                  `FOR WEEKLY GENERATING ONLYschedule.startDate`,
-                  schedule.selectedTime,
-                  `current time`,
-                  new Date().getHours()
-                );
                 let currentDate = new Date();
 
                 let currentDay = currentDate.getDay();
@@ -460,6 +397,7 @@ const firebaseSchedyleEventCheck = async () => {
                     email,
                     chatId,
                     img,
+                    video: schedule.video,
                     text: message,
                     scheduleId: id,
                     scheduleName: name,
@@ -480,12 +418,6 @@ const firebaseSchedyleEventCheck = async () => {
                   schedule.endDate ? schedule.endDate : null,
                   await getPostsLength(schedule.id)
                 ):
-                console.log(
-                  `FOR MONTHLY GENERATING ONLYschedule.startDate`,
-                  schedule.selectedTime,
-                  `current time`,
-                  new Date().getHours()
-                );
                 const currentMonthDate = new Date();
                 let lastMonthlyPostDate = null;
 
@@ -518,6 +450,7 @@ const firebaseSchedyleEventCheck = async () => {
                     email,
                     chatId,
                     img,
+                    video: schedule.video,
                     text: message,
                     scheduleId: id,
                     scheduleName: name,

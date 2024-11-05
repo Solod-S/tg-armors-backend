@@ -5,32 +5,31 @@ const checkCurrentDateIsAfterLastPost = date => {
   // const lastPublicationDate = moment.utc(date).startOf("day"); // Привести дату к началу дня в UTC
   // const currentDate = moment().startOf("day"); // Привести текущую дату к началу дня в локальной временной зоне
   // return currentDate.isAfter(lastPublicationDate);
-  return moment(date).isBefore(moment(), "day");
+  return moment(date).isBefore(
+    moment(),
+    "day"
+  )
 };
 
 const checkTimeToGenerateArticle = inputTime => {
-  // Get the current time
+
+  // Get the current time 
   const currentTime = new Date();
   const currentHours = currentTime.getHours();
   const currentMinutes = currentTime.getMinutes();
 
   // Split the time string into hours and minutes
   const [hours, minutes] = inputTime.split(":").map(Number);
+ 
 
   if (
     currentHours > hours ||
     (currentHours === hours && currentMinutes >= minutes)
   ) {
-    console.log(`сейчас время`, currentHours);
-    console.log(`в базе время`, hours);
-    console.log(
-      `оно посчитало что сейчас больше или равно времени 1`,
-      currentHours > hours
-    );
-    console.log(
-      `оно посчитало что сейчас больше или равно времени 2`,
-      currentHours === hours && currentMinutes >= minutes
-    );
+    console.log(`сейчас время`,currentHours)
+    console.log(`в базе время`,hours)
+    console.log(`оно посчитало что сейчас больше или равно времени 1`, currentHours > hours )
+    console.log(`оно посчитало что сейчас больше или равно времени 2`,  (currentHours === hours && currentMinutes >= minutes) )
     return true;
   } else {
     return false;
@@ -39,7 +38,7 @@ const checkTimeToGenerateArticle = inputTime => {
 
 // checkTimeToGenerateArticle("07:00")
 
-const checkStartDateToGenerateArticle = inputDate => {
+const checkStartDateToGenerateArticle =  inputDate => {
   const startDateIsOk = moment().isSameOrAfter(moment(inputDate), "day");
 
   if (startDateIsOk) {
