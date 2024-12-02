@@ -108,10 +108,6 @@ const setBotCommands = () => {
       );
 
       bot.once("message", async userMsg => {
-        // Проверяем, что сообщение пришло из того же чата
-        if (userMsg.chat.id !== chatId || userMsg.chat.type !== "private") {
-          return;
-        }
         const {
           message_id,
           from: { id: userId, first_name, last_name, username },
