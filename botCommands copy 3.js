@@ -23,25 +23,7 @@ const {
   faqMessageTextGlass,
   faqMessageTextFilm,
 } = require("./constant/messages");
-console.log(
-  `WHOLESALE_TG_ID,
-  WHOLESALE_TREED_ID,`,
-  WHOLESALE_TG_ID,
-  WHOLESALE_TREED_ID
-);
-console.log(
-  `,
-  RETAIL_ORDER_TG_ID,
-  RETAIL_ORDER_TREED_ID,`,
-  RETAIL_ORDER_TG_ID,
-  RETAIL_ORDER_TREED_ID
-);
-console.log(
-  `TECH_SUPPORT_TG_ID,
-  TECH_SUPPORT_TREED_ID,`,
-  TECH_SUPPORT_TG_ID,
-  TECH_SUPPORT_TREED_ID
-);
+
 const setBotCommands = () => {
   bot.setMyCommands([
     { command: "/leave_request", description: "Залишити заявку" },
@@ -75,29 +57,29 @@ const setBotCommands = () => {
           "<b>Оберіть тип звернення, який вам підходить:</b>\n\n" +
             "1. 📦 Гуртова співпраця для бізнесу\n" +
             "2. 🛍️ Роздрібні замовлення для покупців\n" +
-            "3. 🛠️ Технічна підтримка для вирішення проблем\n",
-          // "4. 🤝 Пропозиція про співпрацю",
-          {
-            parse_mode: "HTML",
-            reply_markup: {
-              inline_keyboard: [
-                [
-                  {
-                    text: "📦 Гуртова співпраця",
-                    callback_data: "wholesale",
-                  },
+            "3. 🛠️ Технічна підтримка для вирішення проблем\n" +
+            // "4. 🤝 Пропозиція про співпрацю",
+            {
+              parse_mode: "HTML",
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    {
+                      text: "📦 Гуртова співпраця",
+                      callback_data: "wholesale",
+                    },
+                  ],
+                  [
+                    {
+                      text: "🛍️ Роздрібні замовлення",
+                      callback_data: "retail",
+                    },
+                  ],
+                  [{ text: "🛠️ Техпідтримка", callback_data: "support" }],
+                  // [{ text: "🤝 Співпраця", callback_data: "collaboration" }],
                 ],
-                [
-                  {
-                    text: "🛍️ Роздрібні замовлення",
-                    callback_data: "retail",
-                  },
-                ],
-                [{ text: "🛠️ Техпідтримка", callback_data: "support" }],
-                // [{ text: "🤝 Співпраця", callback_data: "collaboration" }],
-              ],
-            },
-          }
+              },
+            }
         );
       }
 
@@ -119,7 +101,7 @@ const setBotCommands = () => {
         });
       }
     } catch (error) {
-      console.error("Ошибка в обработчике сообщения:", error.message);
+      console.error("Ошибка в обработчике сообщения:", error);
       await bot.sendMessage(
         msg.chat.id,
         "На жаль, сталася помилка. Спробуйте пізніше."
@@ -219,24 +201,24 @@ const setBotCommands = () => {
             }
 
             const adminMessage = `
-    Новий запит від користувача:\n
-    - <b>Тип звернення:</b> ${
-      data === "wholesale"
-        ? "📦 Гуртова співпраця"
-        : data === "retail"
-        ? "🛍️ Роздрібні замовлення"
-        : data === "support"
-        ? "🛠️ Техпідтримка"
-        : "🤝 Співпраця"
-    }
-    - <b>Ім'я:</b> ${first_name} ${last_name || ""}
-    - <b>Нікнейм:</b> @${username || "немає"}
-    - <b>Телефон:</b> ${phone_number}
-    - <b>ID користувача:</b> ${userId}
-    - <b>ID повідомлення:</b> ${message_id}
-    - <b>Дата/Час:</b> ${formattedDate}
-    <b>Текст повідомлення:</b> "${commentText}" 
-    ${responsibleTag}
+            Новий запит від користувача:
+            - <b>Тип звернення:</b> ${
+              data === "wholesale"
+                ? "📦 Гуртова співпраця"
+                : data === "retail"
+                ? "🛍️ Роздрібні замовлення"
+                : data === "support"
+                ? "🛠️ Техпідтримка"
+                : "🤝 Співпраця"
+            }
+            - <b>Ім'я:</b> ${first_name} ${last_name || ""}
+            - <b>Нікнейм:</b> @${username || "немає"}
+            - <b>Телефон:</b> ${phone_number}
+            - <b>ID користувача:</b> ${userId}
+            - <b>ID повідомлення:</b> ${message_id}
+            - <b>Дата/Час:</b> ${formattedDate}
+            <b>Текст повідомлення:</b> "${commentText}" 
+            ${responsibleTag}
           `;
 
             // Отправляем сообщение в Telegram
@@ -249,10 +231,6 @@ const setBotCommands = () => {
             }
 
             await bot.sendMessage(tgGroupId, adminMessage, messageOptions);
-            // await bot.sendMessage("-1002086154595", adminMessage, {
-            //   parse_mode: "HTML",
-            //   message_thread_id: "3",
-            // });
 
             await bot.sendMessage(
               chatId,
@@ -303,10 +281,7 @@ const setBotCommands = () => {
               // Получение ID созданной задачи
               // const taskId = response.data.result.task.id; // ID задачи
             } catch (error) {
-              console.error(
-                "Ошибка при создании задачи в Bitrix24:",
-                error.message
-              );
+              console.error("Ошибка при создании задачи в Bitrix24:", error);
             }
 
             // Удаляем обработчики, чтобы не создавать новые задачи
@@ -329,7 +304,7 @@ const setBotCommands = () => {
       // Добавляем обработчик контакта
       bot.on("contact", contactHandler);
     } catch (error) {
-      console.error("Ошибка в обработчике callback_query:", error.message);
+      console.error("Ошибка в обработчике callback_query:", error);
       await bot.sendMessage(
         query.message.chat.id,
         "На жаль, сталася помилка. Спробуйте пізніше."
