@@ -9,9 +9,11 @@ const {
   RETAIL_ORDER_TREED_ID,
   TECH_SUPPORT_TG_ID,
   TECH_SUPPORT_TREED_ID,
+  COLLABORATION_TG_ID,
   BITRIX24_SERVICE_GROUP_ID,
   BITRIX24_SERVICE_RESPONSIBLE_1_ID,
   BITRIX24_SERVICE_RESPONSIBLE_2_ID,
+  BITRIX24_SERVICE_RESPONSIBLE_3_ID,
   BITRIX24_WEBHOOK_URL,
   WHOLESALE_INQUIRY_RESPONSIBLE_ID,
   RETAIL_ORDER_INQUIRY_RESPONSIBLE_ID,
@@ -23,28 +25,12 @@ const {
   faqMessageTextGlass,
   faqMessageTextFilm,
 } = require("./constant/messages");
-console.log(
-  `WHOLESALE_TG_ID,
-  WHOLESALE_TREED_ID,`,
-  WHOLESALE_TG_ID,
-  WHOLESALE_TREED_ID
-);
-console.log(
-  `,
-  RETAIL_ORDER_TG_ID,
-  RETAIL_ORDER_TREED_ID,`,
-  RETAIL_ORDER_TG_ID,
-  RETAIL_ORDER_TREED_ID
-);
-console.log(
-  `TECH_SUPPORT_TG_ID,
-  TECH_SUPPORT_TREED_ID,`,
-  TECH_SUPPORT_TG_ID,
-  TECH_SUPPORT_TREED_ID
-);
+
+const commands = ["/start", "/contacts"];
+
 const setBotCommands = () => {
   bot.setMyCommands([
-    { command: "/leave_request", description: "Залишити заявку" },
+    { command: "/start", description: "Залишити заявку" },
     { command: "/contacts", description: "Контакти" },
   ]);
 
@@ -52,7 +38,7 @@ const setBotCommands = () => {
     try {
       const chatId = msg.chat.id;
       const text = msg.text;
-
+      console.log(`chatId`, chatId, msg.chat);
       if (text == "@ArmorStandartBot show group id") {
         console.log(
           `Chat ID: ${msg.chat.id}, Thread ID: ${
@@ -68,15 +54,11 @@ const setBotCommands = () => {
         );
       }
 
-      if (text === "/leave_request") {
+      if (text === "/start") {
         // Показываем меню для выбора типа запроса
         await bot.sendMessage(
           chatId,
-          "<b>Оберіть тип звернення, який вам підходить:</b>\n\n" +
-            "1. 📦 Гуртова співпраця для бізнесу\n" +
-            "2. 🛍️ Роздрібні замовлення для покупців\n" +
-            "3. 🛠️ Технічна підтримка для вирішення проблем\n",
-          // "4. 🤝 Пропозиція про співпрацю",
+          "<b>Оберіть тип звернення, який вам підходить:</b>\n\n",
           {
             parse_mode: "HTML",
             reply_markup: {
@@ -93,12 +75,47 @@ const setBotCommands = () => {
                     callback_data: "retail",
                   },
                 ],
-                [{ text: "🛠️ Техпідтримка", callback_data: "support" }],
-                // [{ text: "🤝 Співпраця", callback_data: "collaboration" }],
+                [{ text: "🛠️ Сервісний центр", callback_data: "support" }],
+                [
+                  {
+                    text: "🤝 Пропозиція про співпраці",
+                    callback_data: "collaboration",
+                  },
+                ],
               ],
             },
           }
         );
+        // await bot.sendMessage(
+        //   chatId,
+        //   "<b>Оберіть тип звернення, який вам підходить:</b>\n\n"
+        //    +
+        //     "1. 📦 Гуртові замовлення\n" +
+        //     "2. 🛍️ Роздрібні замовлення\n" +
+        //     "3. 🛠️ Сервісний центр\n" +
+        //     "4. 🤝 Пропозиція про співпраці",
+        //   {
+        //     parse_mode: "HTML",
+        //     reply_markup: {
+        //       inline_keyboard: [
+        //         [
+        //           {
+        //             text: "📦 Гуртова співпраця",
+        //             callback_data: "wholesale",
+        //           },
+        //         ],
+        //         [
+        //           {
+        //             text: "🛍️ Роздрібні замовлення",
+        //             callback_data: "retail",
+        //           },
+        //         ],
+        //         [{ text: "🛠️ Сервісний центр", callback_data: "support" }],
+        //         [{ text: "🤝 Пропозиція про співпраці", callback_data: "collaboration" }],
+        //       ],
+        //     },
+        //   }
+        // );
       }
 
       if (text === "/contacts") {
@@ -108,12 +125,12 @@ const setBotCommands = () => {
           parse_mode: "Markdown",
           reply_markup: {
             inline_keyboard: [
-              [
-                {
-                  text: "Відкрити карту",
-                  url: "https://goo.gl/maps/jmE55U1KPn1GXXWW9",
-                },
-              ],
+              // [
+              //   {
+              //     text: "Відкрити карту",
+              //     url: "https://goo.gl/maps/jmE55U1KPn1GXXWW9",
+              //   },
+              // ],
             ],
           },
         });
@@ -165,6 +182,8 @@ const setBotCommands = () => {
         if (userMsg.contact) {
           const { first_name, last_name, phone_number } = userMsg.contact;
 
+          // bot.removeListener("contact", contactHandler);
+
           // Даем пользователю возможность оставить комментарий
           await bot.sendMessage(
             chatId,
@@ -178,6 +197,15 @@ const setBotCommands = () => {
               commentMsg.chat.type !== "private"
             ) {
               return; // Игнорируем сообщения из других чатов
+            }
+
+            if (commands.includes(commentMsg.text)) {
+              bot.removeListener("message", commentHandler);
+              await bot.sendMessage(
+                chatId,
+                "Запит на коментар було скасовано."
+              );
+              return; // Прерываем выполнение
             }
 
             const {
@@ -216,6 +244,8 @@ const setBotCommands = () => {
               tgGroupId = TECH_SUPPORT_TG_ID;
               gtTreedId = TECH_SUPPORT_TREED_ID;
               responsibleTag = `\n\n${TECH_SUPPORT_INQUIRY_RESPONSIBLE_ID}`;
+            } else if (data === "collaboration") {
+              tgGroupId = COLLABORATION_TG_ID;
             }
 
             const adminMessage = `
@@ -235,8 +265,10 @@ const setBotCommands = () => {
     - <b>ID користувача:</b> ${userId}
     - <b>ID повідомлення:</b> ${message_id}
     - <b>Дата/Час:</b> ${formattedDate}
-    <b>Текст повідомлення:</b> "${commentText}" 
-    ${responsibleTag}
+    - <b>Текст повідомлення:</b>
+    
+    "${commentText}" 
+   
           `;
 
             // Отправляем сообщение в Telegram
@@ -248,11 +280,21 @@ const setBotCommands = () => {
               messageOptions.message_thread_id = gtTreedId;
             }
 
-            await bot.sendMessage(tgGroupId, adminMessage, messageOptions);
-            // await bot.sendMessage("-1002086154595", adminMessage, {
-            //   parse_mode: "HTML",
-            //   message_thread_id: "3",
-            // });
+            await bot.sendMessage(
+              tgGroupId,
+              adminMessage + responsibleTag,
+              messageOptions
+            );
+
+            // COLLABORATION_TG_ID
+            // await bot.sendMessage(
+            //   "-1002086154595",
+            //   adminMessage + responsibleTag,
+            //   {
+            //     parse_mode: "HTML",
+            //     message_thread_id: "3",
+            //   }
+            // );
 
             await bot.sendMessage(
               chatId,
@@ -267,6 +309,12 @@ const setBotCommands = () => {
               "yyyy-MM-dd'T'HH:mm:ssXXX",
               { locale: uk }
             );
+            const bitrix24ResponsibleId =
+              data === "wholesale"
+                ? BITRIX24_SERVICE_RESPONSIBLE_2_ID
+                : data === "collaboration"
+                ? BITRIX24_SERVICE_RESPONSIBLE_3_ID
+                : BITRIX24_SERVICE_RESPONSIBLE_1_ID;
 
             const taskData = {
               fields: {
@@ -284,8 +332,9 @@ const setBotCommands = () => {
                   " " +
                   (last_name || ""),
                 DESCRIPTION: adminMessage,
-                RESPONSIBLE_ID: BITRIX24_SERVICE_RESPONSIBLE_1_ID,
-                ACCOMPLICES: [BITRIX24_SERVICE_RESPONSIBLE_2_ID],
+                RESPONSIBLE_ID: bitrix24ResponsibleId,
+                // RESPONSIBLE_ID: BITRIX24_SERVICE_RESPONSIBLE_1_ID,
+                // ACCOMPLICES: [BITRIX24_SERVICE_RESPONSIBLE_2_ID],
                 DEADLINE: formattedDeadline,
                 GROUP_ID: BITRIX24_SERVICE_GROUP_ID,
                 PRIORITY: 2,
