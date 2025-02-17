@@ -21,16 +21,18 @@ const {
 } = process.env;
 const {
   contactsMessageText,
+  socialLinksText,
   faqMessageTextPlotter,
   faqMessageTextGlass,
   faqMessageTextFilm,
 } = require("./constant/messages");
 
-const commands = ["/start", "/contacts"];
+const commands = ["/start", "/contacts", "/social"];
 
 const setBotCommands = () => {
   bot.setMyCommands([
     { command: "/start", description: "Залишити заявку" },
+    { command: "/social", description: "Наші соцмережі" },
     { command: "/contacts", description: "Контакти" },
   ]);
 
@@ -38,7 +40,7 @@ const setBotCommands = () => {
     try {
       const chatId = msg.chat.id;
       const text = msg.text;
-      console.log(`chatId`, chatId, msg.chat);
+      // console.log(`chatId`, chatId, msg.chat);
       if (text == "@ArmorStandartBot show group id") {
         console.log(
           `Chat ID: ${msg.chat.id}, Thread ID: ${
@@ -86,42 +88,33 @@ const setBotCommands = () => {
             },
           }
         );
-        // await bot.sendMessage(
-        //   chatId,
-        //   "<b>Оберіть тип звернення, який вам підходить:</b>\n\n"
-        //    +
-        //     "1. 📦 Гуртові замовлення\n" +
-        //     "2. 🛍️ Роздрібні замовлення\n" +
-        //     "3. 🛠️ Сервісний центр\n" +
-        //     "4. 🤝 Пропозиція про співпраці",
-        //   {
-        //     parse_mode: "HTML",
-        //     reply_markup: {
-        //       inline_keyboard: [
-        //         [
-        //           {
-        //             text: "📦 Гуртова співпраця",
-        //             callback_data: "wholesale",
-        //           },
-        //         ],
-        //         [
-        //           {
-        //             text: "🛍️ Роздрібні замовлення",
-        //             callback_data: "retail",
-        //           },
-        //         ],
-        //         [{ text: "🛠️ Сервісний центр", callback_data: "support" }],
-        //         [{ text: "🤝 Пропозиція про співпраці", callback_data: "collaboration" }],
-        //       ],
-        //     },
-        //   }
-        // );
       }
 
       if (text === "/contacts") {
         const stickerUrl = "./img/inline/girl_map.jpg";
         return bot.sendPhoto(chatId, stickerUrl, {
           caption: contactsMessageText,
+          parse_mode: "Markdown",
+          reply_markup: {
+            inline_keyboard: [
+              // [
+              //   {
+              //     text: "Відкрити карту",
+              //     url: "https://goo.gl/maps/jmE55U1KPn1GXXWW9",
+              //   },
+              // ],
+            ],
+          },
+        });
+      }
+
+      if (text === "/social") {
+        const stickerUrl = "./img/inline/social.jpg";
+
+        // bot.sendMessage(chatId, socialLinks, { parse_mode: 'Markdown' })
+
+        return bot.sendPhoto(chatId, stickerUrl, {
+          caption: socialLinksText,
           parse_mode: "Markdown",
           reply_markup: {
             inline_keyboard: [
@@ -182,7 +175,8 @@ const setBotCommands = () => {
         if (userMsg.contact) {
           const { first_name, last_name, phone_number } = userMsg.contact;
 
-          // bot.removeListener("contact", contactHandler);
+          bot.removeListener("contact", contactHandler);
+          bot.removeListener("message", contactMsgWaiterHandler);
 
           // Даем пользователю возможность оставить комментарий
           await bot.sendMessage(
@@ -201,6 +195,8 @@ const setBotCommands = () => {
 
             if (commands.includes(commentMsg.text)) {
               bot.removeListener("message", commentHandler);
+              bot.removeListener("contact", contactHandler);
+
               await bot.sendMessage(
                 chatId,
                 "Запит на коментар було скасовано."
@@ -348,7 +344,6 @@ const setBotCommands = () => {
                 BITRIX24_WEBHOOK_URL + "/tasks.task.add",
                 taskData
               );
-
               // Получение ID созданной задачи
               // const taskId = response.data.result.task.id; // ID задачи
             } catch (error) {
@@ -375,8 +370,30 @@ const setBotCommands = () => {
         }
       };
 
+      const contactMsgWaiterHandler = async commentMsg => {
+        if (
+          commentMsg.chat.id !== chatId ||
+          commentMsg.chat.type !== "private" ||
+          commentMsg.contact
+        ) {
+          return; // Игнорируем сообщения из других чатов
+        }
+
+        if (commands.includes(commentMsg.text)) {
+          bot.removeListener("message", contactMsgWaiterHandler);
+          bot.removeListener("contact", contactHandler);
+          return; // Прерываем выполнение
+        }
+
+        await bot.sendMessage(
+          chatId,
+          "Ваш запит не було відправлено, оскільки ви не поділилися своїми контактними даними. Будь ласка, надайте контактну інформацію, після чого ви зможете успішно відправити звернення."
+        );
+      };
+
       // Добавляем обработчик контакта
       bot.on("contact", contactHandler);
+      bot.on("message", contactMsgWaiterHandler);
     } catch (error) {
       console.error("Ошибка в обработчике callback_query:", error.message);
       await bot.sendMessage(

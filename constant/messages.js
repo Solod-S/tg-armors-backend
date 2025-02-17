@@ -158,6 +158,30 @@ const farewells = [
   "🌠 До побачення, друзі! Нехай ваша ніч буде спокійною та відпочиваючою!",
 ];
 
+// const socialLinksText = `
+// ✨ *Ми в соцмережах*:
+// 📹 [YouTube - огляди, інструкції](https://www.youtube.com/@armorstandart)
+// 📸 [Instagram](https://www.instagram.com/armorstandart/)
+// 📘 [Facebook](https://www.facebook.com/armorstandart)
+// 🎵 [TikTok](https://www.tiktok.com/@armorstandart)
+// `;
+
+const socialLinksText = `
+🌟 *Ми в соцмережах* 🌟
+
+📹 *YouTube* - огляди, інструкції:  
+👉 [Переглянути відео](https://www.youtube.com/@armorstandart)
+
+📸 *Instagram* - найкращі фото та відео:  
+👉 [Підписатись на нас](https://www.instagram.com/armorstandart/)
+
+📘 *Facebook* - новини та оголошення:  
+👉 [Приєднуйтесь до нас](https://www.facebook.com/armorstandart)
+
+🎵 *TikTok* - цікаві відео:  
+👉 [Слідкуйте за нами](https://www.tiktok.com/@armorstandart)
+`;
+
 module.exports = {
   contactsMessageText,
   faqMessageText,
@@ -167,4 +191,5 @@ module.exports = {
   faqMessageTextPlotter,
   faqMessageTextGlass,
   faqMessageTextFilm,
+  socialLinksText,
 };

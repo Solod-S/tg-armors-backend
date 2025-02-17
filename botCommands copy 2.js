@@ -20,6 +20,7 @@ const {
 } = process.env;
 const {
   contactsMessageText,
+
   faqMessageTextPlotter,
   faqMessageTextGlass,
   faqMessageTextFilm,
